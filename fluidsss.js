@@ -11,9 +11,11 @@ let viscosity = 1;
 let flowSpeed = 10;
 let animationSpeed = 1;
 const barriers = [];
-
 const particles = [];
-const particleCount = 3000
+const particleCount = 3000;
+
+let selectedBarrier = null;
+let offsetX = 0, offsetY = 0;
 
 function initializeParticles() {
   for (let i = 0; i < particleCount; i++) {
@@ -30,38 +32,49 @@ function initializeParticles() {
 initializeParticles();
 
 function drawBarriers() {
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = 'rgba(255, 7, 7, 0.87)'; 
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = 10;
+}
+
+function drawBarriers() {
   for (const barrier of barriers) {
+    
+    ctx.fillStyle = 'rgb(255, 255, 255)'; 
     ctx.fillRect(barrier.x, barrier.y, barrier.width, barrier.height);
+
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(barrier.x, barrier.y, barrier.width, barrier.height);
   }
 }
 
-function updateParticles() {
-  for (const particle of particles) {
-    particle.x += particle.vx * animationSpeed;
-    particle.y += particle.vy * animationSpeed;
-
-    particle.vx *= 1 - 0.01 * viscosity;
-    particle.vy *= 1 - 0.01 * viscosity;
-
-    if (particle.x < 0) particle.x = canvas.width;
-    if (particle.x > canvas.width) particle.x = 0;
-    if (particle.y < 0) particle.y = canvas.height;
-    if (particle.y > canvas.height) particle.y = 0;
-
-    for (const barrier of barriers) {
-      if (
-        particle.x > barrier.x &&
-        particle.x < barrier.x + barrier.width &&
-        particle.y > barrier.y &&
-        particle.y < barrier.y + barrier.height
-      ) {
-        particle.vx *= -1;
-        particle.vy *= -1;
+    function updateParticles() {
+      for (const particle of particles) {
+        particle.x += particle.vx * animationSpeed;
+        particle.y += particle.vy * animationSpeed;
+    
+        particle.vx *= 1 - 0.002 * viscosity;
+        particle.vy *= 1 - 0.002 * viscosity;
+    
+        if (particle.x < 0) particle.vx = Math.abs(particle.vx);
+        if (particle.x > canvas.width) particle.vx = -Math.abs(particle.vx);
+        if (particle.y < 0) particle.vy = Math.abs(particle.vy);
+        if (particle.y > canvas.height) particle.vy = -Math.abs(particle.vy);
+    
+        for (const barrier of barriers) {
+          if (
+            particle.x > barrier.x &&
+            particle.x < barrier.x + barrier.width &&
+            particle.y > barrier.y &&
+            particle.y < barrier.y + barrier.height
+          ) {
+            particle.vx *= -0.8; 
+            particle.vy *= -0.8;
+          }
+        }
       }
     }
-  }
-}
 
 function drawParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -80,12 +93,48 @@ function drawFluidEffect() {
 }
 
 function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFluidEffect();
   drawBarriers();
   updateParticles();
   drawParticles();
   requestAnimationFrame(animate);
 }
+
+canvas.addEventListener('mousedown', (e) => {
+  const mouseX = e.offsetX;
+  const mouseY = e.offsetY;
+  selectedBarrier = null;
+  
+  for (const barrier of barriers) {
+    if (
+      mouseX > barrier.x &&
+      mouseX < barrier.x + barrier.width &&
+      mouseY > barrier.y &&
+      mouseY < barrier.y + barrier.height
+    ) {
+      selectedBarrier = barrier;
+      offsetX = mouseX - barrier.x;
+      offsetY = mouseY - barrier.y;
+      return;
+    }
+  }
+  
+  if (!selectedBarrier) {
+    barriers.push({ x: mouseX, y: mouseY, width: 100, height: 50 });
+  }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (selectedBarrier) {
+    selectedBarrier.x = e.offsetX - offsetX;
+    selectedBarrier.y = e.offsetY - offsetY;
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  selectedBarrier = null;
+});
 
 function restartAnimation() {
   particles.length = 0;
