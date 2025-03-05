@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fluid Dynamics Simulation</title>
     <link rel="stylesheet" href="simulation.css">
-    <script src="fluid-cfd.js" defer></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,17 +31,19 @@
 </head>
 <body>
 
-    <h1>Fluid Dynamics Simulation</h1>
+    <h1>FLUX-SIM - Fluid Dynamics Simulation</h1>
+
+    <div id="speedDisplay">Average Speed: 0.00</div>
 
     <div id="controls">
         <label for="viscosity">Viscosity:</label>
-        <input type="number" id="viscosity" min="0" max="50" step="0.1" value="1">
+        <input type="number" id="viscosity" min="0" max="10" step="0.1" value="1">
 
         <label for="flowSpeed">Flow Speed:</label>
-        <input type="number" id="flowSpeed" min="1" max="50" step="1" value="10">
+        <input type="number" id="flowSpeed" min="1" max="10" step="1" value="10">
 
         <label for="animationSpeed">Animation Speed:</label>
-        <input type="number" id="animationSpeed" min="0.1" max="50" step="0.1" value="1">
+        <input type="number" id="animationSpeed" min="0.1" max="10" step="0.1" value="1">
 
         <button id="removeBarrier">Remove Barrier</button>
         <button id="addBarrier">Add Barrier</button>
@@ -55,6 +57,80 @@
       <p id="fluidDescription">
       Fluid dynamics is the branch of physics concerned with the flow of fluids (liquids and gases). It involves the study of how fluids behave when subjected to various forces, such as pressure, velocity, and viscosity, and how these forces interact with the environment. Fluid dynamics is an essential area of study in science and engineering because it helps us understand natural processes and design systems that involve fluids.
       
+      <h2>Fluid Dynamics Key Concepts</h2>
+      <ul>
+      <li><strong>Fluid Flow:</strong>Fluids move due to differences in pressure and gravitational forces. They flow from regions of higher pressure to lower pressure and downhill due to gravity.</li>
+      <li><strong>Continuity Equation:</strong></li>This principle states that the mass flow rate of a fluid remains constant from one cross-section to another in a steady flow. Mathematically, it's expressed as:
+
+      𝜌
+      1
+      𝐴
+      1
+      𝑣
+      1
+      =
+      𝜌
+      2
+      𝐴
+      2
+      𝑣
+      2
+      ρ 
+      1
+      ​
+       A 
+      1
+      ​
+       v 
+      1
+      ​
+       =ρ 
+      2
+      ​
+       A 
+      2
+      ​
+       v 
+      2
+      ​
+       
+      
+      Where 
+      𝜌
+      ρ is the fluid density, 
+      𝐴
+      A is the cross-sectional area, and 
+      𝑣
+      v is the flow velocity at points 1 and 2.
+      <li><strong>Bernoulli's Principle:</strong>This principle indicates that in a streamline flow, the sum of the pressure energy, kinetic energy, and potential energy per unit volume remains constant. It implies that an increase in the fluid's velocity leads to a decrease in its pressure.</li>
+      <li><strong>Viscosity:</strong>A measure of a fluid's resistance to deformation or flow. High-viscosity fluids (like honey) flow more slowly than low-viscosity fluids (like water).</li>
+      <li><strong>Dynamic Pressure:</strong>The pressure associated with the fluid's motion, calculated as:
+
+        𝑞
+        =
+        1
+        2
+        𝜌
+        𝑣
+        2
+        q= 
+        2
+        1
+        ​
+         ρv 
+        2
+         
+        
+        Where 
+        𝑞
+        q is the dynamic pressure, 
+        𝜌
+        ρ is the fluid density, and 
+        𝑣
+        v is the flow velocity.</li>
+        <li><strong>Buoyancy:</strong>The upward force exerted by a fluid on an immersed object, counteracting the object's weight. This force arises due to pressure differences within the fluid.</li>
+        </ul>
+
       <br><br><strong>Applications of Fluid Dynamics:</strong>
       Fluid dynamics plays a crucial role in numerous fields and industries. Some of its key applications include:
       <ul>
@@ -79,14 +155,10 @@
       Fluid dynamics is an exciting and fundamental science that impacts many aspects of our daily lives, from the efficiency of machines to understanding the natural environment.
       </p>
       </div>
-      
-      <div class="controls">
-      <label>Viscosity: <input type="range" id="viscosity" min="0" max="10" step="0.1" value="1"></label>
-      <label>Flow Speed: <input type="range" id="flowSpeed" min="1" max="20" step="1" value="10"></label>
-      <label>Animation Speed: <input type="range" id="animationSpeed" min="0.1" max="5" step="0.1" value="1"></label>
-       
 
+      <div id="description">
       <h2>Computational Fluid Dynamics (CFD)</h2>
+      <p id="fluidDescription"></p>
         <p>
             Computational Fluid Dynamics (CFD) is a branch of fluid mechanics that uses numerical analysis and algorithms to solve and analyze fluid flow problems. Instead of conducting physical experiments, 
             CFD allows scientists and engineers to simulate fluid interactions digitally, which helps in designing and optimizing fluid-related systems.
@@ -123,20 +195,21 @@
 
     <div id="controls">
         <label>Viscosity: <input type="range" id="viscosity" min="0" max="10" step="0.1" value="1"></label>
-        <label>Flow Speed: <input type="range" id="flowSpeed" min="1" max="20" step="1" value="10"></label>
-        <label>Animation Speed: <input type="range" id="animationSpeed" min="0.1" max="5" step="0.1" value="1"></label>
+        <label>Flow Speed: <input type="range" id="flowSpeed" min="1" max="10" step="1" value="10"></label>
+        <label>Animation Speed: <input type="range" id="animationSpeed" min="0.1" max="10" step="0.1" value="1"></label>
         <button id="restart 2">Restart Simulation</button>
         <button id="addBarrier 2">Add Barrier</button>
     </div>
-
-    <canvas id="fluidCanvas"></canvas> 
 
     <div id="description">
         <h2>Understanding Computational Fluid Dynamics (CFD)</h2>
         <p>CFD is used to analyze and simulate how fluids behave under different conditions. This simulation demonstrates real-time fluid flow, viscosity effects, and turbulence.</p>
     </div>
 
-      <script src="fluidsss.js"></script>
+    <canvas id="fluidCanvas2"></canvas> 
 
+      <script src="fluidsss.js" defer></script>
+      <script src="fluid-cfd.js" defer></script>
+      
       </body>
       </html>
